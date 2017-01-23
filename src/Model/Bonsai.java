@@ -1,0 +1,103 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package Model;
+
+/**
+ *
+ * @author mark
+ */
+public class Bonsai {
+    
+    private int _1_id;
+    private String _2_nom;
+    private String _3_nomBotanic;
+    private String _4_familia;
+    private int _5_edat;
+    private String _6_dataAlta;
+    private String _7_dataBaixa;
+
+    public Bonsai(String _2_nom, String _3_nomBotanic, String _4_familia, int _5_edat, String _6_dataAlta, String _7_dataBaixa) {
+        this._2_nom = _2_nom;
+        this._3_nomBotanic = _3_nomBotanic;
+        this._4_familia = _4_familia;
+        this._5_edat = _5_edat;
+        this._6_dataAlta = _6_dataAlta;
+        this._7_dataBaixa = _7_dataBaixa;
+    }
+
+    public Bonsai(int _1_id, String _2_nom, String _3_nomBotanic, String _4_familia, int _5_edat, String _6_dataAlta, String _7_dataBaixa) {
+        this._1_id = _1_id;
+        this._2_nom = _2_nom;
+        this._3_nomBotanic = _3_nomBotanic;
+        this._4_familia = _4_familia;
+        this._5_edat = _5_edat;
+        this._6_dataAlta = _6_dataAlta;
+        this._7_dataBaixa = _7_dataBaixa;
+    }
+
+    public int get1_id() {
+        return _1_id;
+    }
+
+    public void set1_id(int _1_id) {
+        this._1_id = _1_id;
+    }
+
+    public String get2_nom() {
+        return _2_nom;
+    }
+
+    public void set2_nom(String _2_nom) {
+        this._2_nom = _2_nom;
+    }
+
+    public String get3_nomBotanic() {
+        return _3_nomBotanic;
+    }
+
+    public void set3_nomBotanic(String _3_nomBotanic) {
+        this._3_nomBotanic = _3_nomBotanic;
+    }
+
+    public String get4_familia() {
+        return _4_familia;
+    }
+
+    public void set4_familia(String _4_familia) {
+        this._4_familia = _4_familia;
+    }
+
+    public int get5_edat() {
+        return _5_edat;
+    }
+
+    public void set5_edat(int _5_edat) {
+        this._5_edat = _5_edat;
+    }
+
+    public String get6_dataAlta() {
+        return _6_dataAlta;
+    }
+
+    public void set6_dataAlta(String _6_dataAlta) {
+        this._6_dataAlta = _6_dataAlta;
+    }
+
+    public String get7_dataBaixa() {
+        return _7_dataBaixa;
+    }
+
+    public void set7_dataBaixa(String _7_dataBaixa) {
+        this._7_dataBaixa = _7_dataBaixa;
+    }
+    
+   
+    
+    
+}
+
+    
