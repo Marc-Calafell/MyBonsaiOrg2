@@ -27,6 +27,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import Model.Model;
 import Vista.Gui;
+import java.sql.Date;
 
 /**
  *
@@ -41,8 +42,8 @@ public class Controlador {
     private String nomBotanic="";
     private String familia="";
     private int edat;
-    private String dataAlta="";
-    private String dataBaixa="";
+    private Date dataAlta=null;
+    private Date dataBaixa=null;
     private int id=-1;
 
     public Controlador(Model odb, Gui jf) {
@@ -138,7 +139,7 @@ public class Controlador {
                 else 
                     if (actionEvent.getSource().equals(vista.getInsertBTN())) {
                         if (!nom.equals("") || !nomBotanic.equals("")) {
-                            odb.INSERTbonsai(id,nom, nomBotanic, familia, edat, dataAlta, dataBaixa);
+                            odb.INSERTbonsai(nom, nomBotanic, familia, edat, dataAlta, dataBaixa);
                             ClearJTF();
                             carregaTaula(odb.SELECTbonsai());
                         }
@@ -189,13 +190,13 @@ public class Controlador {
                         familia = (String) vista.getTaulaBonsais().getValueAt(filasel, 3);
                         vista.getFamiliaJTF().setText(familia);
                         
-                        edat = Integer.parseInt(vista.getTaulaBonsais().getValueAt(filasel, 4).toString());
+                        edat = Integer.parseInt((String) vista.getTaulaBonsais().getValueAt(filasel, 4));
                         
-                        dataAlta = (String) vista.getTaulaBonsais().getValueAt(filasel, 5);
-                        vista.getDataAltaJTF().setText(dataAlta);
+                        dataAlta = (Date) vista.getTaulaBonsais().getValueAt(filasel, 5);
+                        vista.getDataAltaJTF().setText(dataAlta.toString());
                         
-                        dataBaixa = (String) vista.getTaulaBonsais().getValueAt(filasel, 6);
-                        vista.getDataBaixaJTF().setText(dataBaixa);
+                        dataBaixa = (Date) vista.getTaulaBonsais().getValueAt(filasel, 6);
+                        vista.getDataBaixaJTF().setText(dataBaixa.toString());
                         
                         
                     }else ClearJTF();
