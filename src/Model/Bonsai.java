@@ -6,6 +6,8 @@
 
 package Model;
 
+import java.sql.Date;
+
 /**
  *
  * @author mark
@@ -17,10 +19,10 @@ public class Bonsai {
     private String _3_nomBotanic;
     private String _4_familia;
     private int _5_edat;
-    private String _6_dataAlta;
-    private String _7_dataBaixa;
+    private Date _6_dataAlta;
+    private Date _7_dataBaixa;
 
-    public Bonsai(String _2_nom, String _3_nomBotanic, String _4_familia, int _5_edat, String _6_dataAlta, String _7_dataBaixa) {
+    public Bonsai(String _2_nom, String _3_nomBotanic, String _4_familia, int _5_edat, Date _6_dataAlta, Date _7_dataBaixa) {
         this._2_nom = _2_nom;
         this._3_nomBotanic = _3_nomBotanic;
         this._4_familia = _4_familia;
@@ -29,7 +31,7 @@ public class Bonsai {
         this._7_dataBaixa = _7_dataBaixa;
     }
 
-    public Bonsai(int _1_id, String _2_nom, String _3_nomBotanic, String _4_familia, int _5_edat, String _6_dataAlta, String _7_dataBaixa) {
+    public Bonsai(int _1_id, String _2_nom, String _3_nomBotanic, String _4_familia, int _5_edat, Date _6_dataAlta, Date _7_dataBaixa) {
         this._1_id = _1_id;
         this._2_nom = _2_nom;
         this._3_nomBotanic = _3_nomBotanic;
@@ -79,19 +81,19 @@ public class Bonsai {
         this._5_edat = _5_edat;
     }
 
-    public String get6_dataAlta() {
+    public Date get6_dataAlta() {
         return _6_dataAlta;
     }
 
-    public void set6_dataAlta(String _6_dataAlta) {
+    public void set6_dataAlta(Date _6_dataAlta) {
         this._6_dataAlta = _6_dataAlta;
     }
 
-    public String get7_dataBaixa() {
+    public Date get7_dataBaixa() {
         return _7_dataBaixa;
     }
 
-    public void set7_dataBaixa(String _7_dataBaixa) {
+    public void set7_dataBaixa(Date _7_dataBaixa) {
         this._7_dataBaixa = _7_dataBaixa;
     }
     

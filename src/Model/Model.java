@@ -9,6 +9,7 @@ package Model;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -81,8 +82,8 @@ public class Model {
                     String nomBotanic=resultSet.getString(3);
                     String familia=resultSet.getString(4);
                     int edat=resultSet.getInt(5);
-                    String dataAlta=resultSet.getString(6);
-                    String dataBaixa=resultSet.getString(7);
+                    Date dataAlta=resultSet.getDate(6);
+                    Date dataBaixa=resultSet.getDate(7);
                     llista.add(new Bonsai(id, nom, nomBotanic, familia, edat, dataAlta , dataBaixa));                
                 }
             
@@ -98,17 +99,16 @@ public class Model {
     
     
     
-    public void INSERTbonsai(int id, String nom, String nomBotanic, String familia, int edat, String dataAlta, String dataBaixa){
+    public void INSERTbonsai(String nom, String nomBotanic, String familia, int edat, Date dataAlta, Date dataBaixa){
             
         String sql = "INSERT INTO bonsai (nom, nomBotanic, familia, edat, dataAlta , dataBaixa) VALUES (?, ?, ?, ?, ?, ?)";
         try(PreparedStatement INSERT=connexio.prepareStatement(sql)) {
-            INSERT.setInt(1, id);
-            INSERT.setString(2, nom);
-            INSERT.setString(3, nomBotanic);
-            INSERT.setString(4, familia);
-            INSERT.setInt(5, edat);
-            INSERT.setString(6, dataAlta);
-            INSERT.setString(7, dataBaixa);
+            INSERT.setString(1, nom);
+            INSERT.setString(2, nomBotanic);
+            INSERT.setString(3, familia);
+            INSERT.setInt(4, edat);
+            INSERT.setDate(5,dataAlta);
+            INSERT.setDate(6, dataBaixa);
             INSERT.executeUpdate();
             
         } catch (SQLException e) {
@@ -117,7 +117,7 @@ public class Model {
     
     }
     
-    public void UPDATEbonsai(int id, String nom, String nomBotanic, String familia, int edat, String dataAlta, String dataBaixa){
+    public void UPDATEbonsai(int id, String nom, String nomBotanic, String familia, int edat, Date dataAlta, Date dataBaixa){
             
         String sql = "UPDATE bonsai SET nom=?, nomBotanic=?, familia=?, edat=?, dataAlta=?, dataBaixa=? WHERE id=?";
         try(PreparedStatement UPDATE=connexio.prepareStatement(sql)) {
@@ -125,8 +125,8 @@ public class Model {
             UPDATE.setString(2, nomBotanic);
             UPDATE.setString(3, familia);
             UPDATE.setInt(4, edat);
-            UPDATE.setString(5, dataAlta);
-            UPDATE.setString(6, dataBaixa);
+            UPDATE.setDate(5, dataAlta);
+            UPDATE.setDate(6, dataBaixa);
             UPDATE.executeUpdate();
         } catch (SQLException ex) {
             System.err.println("No s'ha pogut modificar el bonsai a la base de dades \n" + ex);
