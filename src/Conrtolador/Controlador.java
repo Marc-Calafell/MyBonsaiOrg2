@@ -235,15 +235,15 @@ public class Controlador {
                 if(e.getSource().equals(vista.getEdatJTF())){
                     edat = Integer.parseInt(vista.getEdatJTF().getText());
                 }
-//                
-//                if(e.getSource().equals(vista.getDataAltaJTF())){
-//                    dataAlta = (Date) vista.getDataAltaJTF();
-//                }
-//                
-//                if(e.getSource().equals(vista.getDataBaixaJTF())){
-//                    dataBaixa = (Date) vista.getDataBaixaJTF();
-//                }
-//                     
+                
+                if(e.getSource().equals(vista.getDataAltaJTF())){
+                    dataAlta = Date.valueOf(vista.getDataAltaJTF().getText().toString());
+                }
+               
+                if(e.getSource().equals(vista.getDataBaixaJTF())){
+                    dataBaixa = Date.valueOf(vista.getDataBaixaJTF().getText().toString());
+                }
+                     
                 if(e.getSource().equals(vista.getPropietarisJTF())){
                     propietaris = (Array) vista.getPropietarisJTF();
                 }
