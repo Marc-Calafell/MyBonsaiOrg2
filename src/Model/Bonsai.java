@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package Model;
 
+import java.sql.Array;
 import java.sql.Date;
 
 /**
@@ -21,17 +16,19 @@ public class Bonsai {
     private int _5_edat;
     private Date _6_dataAlta;
     private Date _7_dataBaixa;
-
-    public Bonsai(String _2_nom, String _3_nomBotanic, String _4_familia, int _5_edat, Date _6_dataAlta, Date _7_dataBaixa) {
+    private Array _8_Propietaris;
+  
+    public Bonsai(String _2_nom, String _3_nomBotanic, String _4_familia, int _5_edat, Date _6_dataAlta, Date _7_dataBaixa, Array _8_Propietaris) {
         this._2_nom = _2_nom;
         this._3_nomBotanic = _3_nomBotanic;
         this._4_familia = _4_familia;
         this._5_edat = _5_edat;
         this._6_dataAlta = _6_dataAlta;
         this._7_dataBaixa = _7_dataBaixa;
+        this._8_Propietaris=_8_Propietaris;
     }
 
-    public Bonsai(int _1_id, String _2_nom, String _3_nomBotanic, String _4_familia, int _5_edat, Date _6_dataAlta, Date _7_dataBaixa) {
+    public Bonsai(int _1_id, String _2_nom, String _3_nomBotanic, String _4_familia, int _5_edat, Date _6_dataAlta, Date _7_dataBaixa, Array _8_Propietaris) {
         this._1_id = _1_id;
         this._2_nom = _2_nom;
         this._3_nomBotanic = _3_nomBotanic;
@@ -39,6 +36,7 @@ public class Bonsai {
         this._5_edat = _5_edat;
         this._6_dataAlta = _6_dataAlta;
         this._7_dataBaixa = _7_dataBaixa;
+        this._8_Propietaris=_8_Propietaris;
     }
 
     public int get1_id() {
@@ -97,7 +95,14 @@ public class Bonsai {
         this._7_dataBaixa = _7_dataBaixa;
     }
     
-   
+    public Array get8_Propietaris() {
+        return _8_Propietaris;
+    }
+
+    public void set8_Propietaris(Array _8_Propietaris) {
+        this._8_Propietaris = _8_Propietaris;
+    }
+
     
     
 }

@@ -27,6 +27,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import Model.Model;
 import Vista.Gui;
+import java.sql.Array;
 import java.sql.Date;
 
 /**
@@ -38,13 +39,14 @@ public class Controlador {
     private Model odb;
     private Gui vista;
     private int filasel=-1;
-    private String nom="A";
+    private int id=0;
+    private String nom="";
     private String nomBotanic="";
     private String familia="";
     private int edat;
     private Date dataAlta=null;
     private Date dataBaixa=null;
-    private int id=-1;
+    private Array propietaris= null;
 
     public Controlador(Model odb, Gui jf) {
         this.odb = odb;
@@ -59,30 +61,38 @@ public class Controlador {
         
         vista.getNomBonsaiJTF().setText("");
         vista.getNomBotanicJTF().setText("");
-       
+        vista.getDataAltaJTF().setText("");
+        vista.getDataBaixaJTF().setText("");
+        vista.getEdatJTF().setText("");
+        vista.getFamiliaJTF().setText("");
+        vista.getPropietarisJTF().setText("");
+        
+        id=0;
+        nom="";
+        nomBotanic="";
+        familia="";
+        edat=0;
+        dataAlta=null;
+        dataBaixa=null;
+        propietaris= null;
+        
     }
 
     public void carregaTaula(ArrayList resultSet) {
-        // TODO add your handling code here:
-        //Quan tornem a carregar la taula perdem la selecció que haviem fet i posem filasel a -1
         filasel = -1;
 
-        //Si hi ha algun element a l'arraylist omplim la taula
+        
         if (resultSet.size() != 0) {
             Vector columnNames = new Vector();
             Vector data = new Vector();
             DefaultTableModel model;
 
-            //Obtenim la classe dels objectes de la llista
             Class<?> classe = resultSet.get(0).getClass();
-            //Anotem el nº de camps de la classe
             int ncamps = classe.getDeclaredClasses().length;
-            //Recorrem els camps de la classe i posem els seus noms com a columnes de la taula
             for (Field f : classe.getDeclaredFields()) {
                 columnNames.addElement(f.getName());
             }
 
-            //Guardem els descriptors de mètode que ens interessen (els getters)
             Vector<Method> methods = new Vector(resultSet.size());
             try {
                 for (PropertyDescriptor pD : Introspector.getBeanInfo(classe).getPropertyDescriptors()) {
@@ -100,11 +110,7 @@ public class Controlador {
                 for (Method mD : methods) {
                     try {
                         row.addElement(mD.invoke(m));
-                    } catch (IllegalAccessException ex) {
-                        Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IllegalArgumentException ex) {
-                        Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (InvocationTargetException ex) {
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                         Logger.getLogger(Gui.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -139,26 +145,26 @@ public class Controlador {
                 else 
                     if (actionEvent.getSource().equals(vista.getInsertBTN())) {
                         if (!nom.equals("") || !nomBotanic.equals("")) {
-                            odb.INSERTbonsai(nom, nomBotanic, familia, edat, dataAlta, dataBaixa);
+                            odb.INSERTbonsai(nom, nomBotanic, familia, edat, dataAlta, dataBaixa, propietaris);
                             ClearJTF();
                             carregaTaula(odb.SELECTbonsai());
                         }
-                        else JOptionPane.showMessageDialog(null, "No pots introduir un actor sense nom ni cognom!!", "Error", JOptionPane.ERROR_MESSAGE);
+                        else JOptionPane.showMessageDialog(null, "Falta nom i/o nom botanic", "Error", JOptionPane.ERROR_MESSAGE);
                     
                     } else {
                         if (actionEvent.getSource().equals(vista.getUpdateBTN())) {
                             if (filasel!=-1 && (!nom.equals("") || !nomBotanic.equals(""))){
-                                odb.UPDATEbonsai(id, nom, nomBotanic, familia, edat, dataAlta, dataBaixa);
+                                odb.UPDATEbonsai(id, nom, nomBotanic, familia, edat, dataAlta, dataBaixa, propietaris);
                                 ClearJTF();
                                 carregaTaula(odb.SELECTbonsai());
                             }
-                            else JOptionPane.showMessageDialog(null, "Per modificar un actor primer l'has de seleccionar i posar algun valor al nom i/o cognoms!!", "Error", JOptionPane.ERROR_MESSAGE);                
+                            else JOptionPane.showMessageDialog(null, "Primer has de marcar l'arbre", "Error", JOptionPane.ERROR_MESSAGE);                
                         }
                         else {
                             try {
                                     odb.finalize();
-                            } catch (Throwable ex) {
-                                System.out.println("Error tancant la base de dades!!");
+                            } catch (Throwable e) {
+                                System.out.println("Error tancant la base de dades!!" + e);
                             }
                             System.exit(0);
                         }
@@ -190,13 +196,16 @@ public class Controlador {
                         familia = (String) vista.getTaulaBonsais().getValueAt(filasel, 3);
                         vista.getFamiliaJTF().setText(familia);
                         
-                        edat = Integer.parseInt((String) vista.getTaulaBonsais().getValueAt(filasel, 4));
+                        edat = Integer.parseInt(vista.getTaulaBonsais().getValueAt(filasel, 4).toString());
                         
                         dataAlta = (Date) vista.getTaulaBonsais().getValueAt(filasel, 5);
                         vista.getDataAltaJTF().setText(dataAlta.toString());
                         
                         dataBaixa = (Date) vista.getTaulaBonsais().getValueAt(filasel, 6);
                         vista.getDataBaixaJTF().setText(dataBaixa.toString());
+                        
+                        propietaris = (Array) vista.getTaulaBonsais().getValueAt(filasel, 7);
+                        vista.getPropietarisJTF().setText(propietaris.toString());
                         
                         
                     }else ClearJTF();
@@ -218,12 +227,37 @@ public class Controlador {
                 if(e.getSource().equals(vista.getNomBotanicJTF())){
                     nomBotanic = vista.getNomBotanicJTF().getText().trim();
                 }
+                
+                if(e.getSource().equals(vista.getFamiliaJTF())){
+                    familia = vista.getFamiliaJTF().getText().trim();
+                }
+                
+                if(e.getSource().equals(vista.getEdatJTF())){
+                    edat = Integer.parseInt(vista.getEdatJTF().getText());
+                }
+//                
+//                if(e.getSource().equals(vista.getDataAltaJTF())){
+//                    dataAlta = (Date) vista.getDataAltaJTF();
+//                }
+//                
+//                if(e.getSource().equals(vista.getDataBaixaJTF())){
+//                    dataBaixa = (Date) vista.getDataBaixaJTF();
+//                }
+//                     
+                if(e.getSource().equals(vista.getPropietarisJTF())){
+                    propietaris = (Array) vista.getPropietarisJTF();
+                }
             }
         
         };
         
         vista.getNomBonsaiJTF().addFocusListener(focusAdapter);
         vista.getNomBotanicJTF().addFocusListener(focusAdapter);
+        vista.getFamiliaJTF().addFocusListener(focusAdapter);
+        vista.getEdatJTF().addFocusListener(focusAdapter);
+        vista.getDataAltaJTF().addFocusListener(focusAdapter);
+        vista.getDataBaixaJTF().addFocusListener(focusAdapter);
+        vista.getPropietarisJTF().addFocusListener(focusAdapter);
         
         WindowAdapter windowAdapter =new java.awt.event.WindowAdapter() {
             @Override
