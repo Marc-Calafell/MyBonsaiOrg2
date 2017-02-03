@@ -29,10 +29,12 @@ import Model.Model;
 import Vista.Gui;
 import java.sql.Array;
 import java.sql.Date;
+import java.sql.SQLException;
+import static org.postgresql.core.Oid.TEXT;
 
 /**
  *
- * @author profe
+ * @author mark
  */
 public class Controlador {
 
@@ -47,6 +49,7 @@ public class Controlador {
     private Date dataAlta=null;
     private Date dataBaixa=null;
     private Array propietaris= null;
+    private String[] propietarisArr= null;
 
     public Controlador(Model odb, Gui jf) {
         this.odb = odb;
@@ -75,6 +78,8 @@ public class Controlador {
         dataAlta=null;
         dataBaixa=null;
         propietaris= null;
+        
+        
         
     }
 
@@ -203,14 +208,23 @@ public class Controlador {
                         
                         dataBaixa = (Date) vista.getTaulaBonsais().getValueAt(filasel, 6);
                         vista.getDataBaixaJTF().setText(dataBaixa.toString());
+                        String separ="";
+                        if(vista.getTaulaBonsais().getValueAt(filasel, 7)!=null){
+                            separ = vista.getTaulaBonsais().getValueAt(filasel, 7).toString().replace("{", "");
+                            separ = separ.replace("}", "");
+                            propietarisArr = separ.split(",");
+                        }else propietarisArr = new String[]{""};
                         
-                        propietaris = (Array) vista.getTaulaBonsais().getValueAt(filasel, 7);
+                        propietaris = Model.connexio.createArrayOf("varchar", propietarisArr);
+                        
                         vista.getPropietarisJTF().setText(propietaris.toString());
                         
                         
                     }else ClearJTF();
                 } catch (NumberFormatException ex) {
                     System.out.println("Ha petat: " + ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         
@@ -245,7 +259,21 @@ public class Controlador {
                 }
                      
                 if(e.getSource().equals(vista.getPropietarisJTF())){
-                    propietaris = (Array) vista.getPropietarisJTF();
+                    
+                        String separ = vista.getPropietarisJTF().getText().replace("{", "");
+                        separ = separ.replace("}", "");
+                        propietarisArr= separ.split(",");
+                        
+                        
+                        System.out.println(propietarisArr[0] +"|"+propietarisArr[1]);
+                    try {    
+                        propietaris = Model.connexio.createArrayOf("text", propietarisArr);
+                        
+                    } catch (SQLException e2) {
+                        System.out.println("Ha petat:" + e2);
+                    }
+                    
+                              
                 }
             }
         

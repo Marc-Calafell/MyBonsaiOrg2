@@ -24,7 +24,7 @@ import javax.swing.JOptionPane;
  */
 public class Model {
     
-    private static Connection connexio = null;  
+    public static Connection connexio = null;  
     private static ResultSet resultSet = null;
         
     public Model() {

@@ -8,7 +8,7 @@ package Vista;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-
+ 
 /**
  *
  * @author mark
@@ -103,7 +103,13 @@ public class Gui extends javax.swing.JFrame {
             TaulaTractaments.getColumnModel().getColumn(3).setResizable(false);
         }
 
-        DataAltaJTF.setText("DD/MM/YYYY");
+        DataAltaJTF.setText("yyyy-mm-dd");
+        DataAltaJTF.setToolTipText("yyyy-mm-dd");
+        DataAltaJTF.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                DataAltaJTFMouseClicked(evt);
+            }
+        });
 
         jLabel1.setText("Nom:");
 
@@ -254,6 +260,13 @@ public class Gui extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void DataAltaJTFMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DataAltaJTFMouseClicked
+        if(getDataAltaJTF().getText()=="yyy-mm-dd"){
+            DataAltaJTF.setText("");
+        
+        }
+    }//GEN-LAST:event_DataAltaJTFMouseClicked
 
     public JTextField getDataAltaJTF() {
         return DataAltaJTF;
