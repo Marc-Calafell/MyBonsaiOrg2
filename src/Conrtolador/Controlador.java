@@ -5,6 +5,7 @@
  */
 package Conrtolador;
 
+import java.text.DateFormat;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -26,11 +27,14 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import Model.Model;
+import static Model.Model.connexio;
 import Vista.Gui;
 import java.sql.Array;
 import java.sql.Date;
 import java.sql.SQLException;
-import static org.postgresql.core.Oid.TEXT;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -38,7 +42,7 @@ import static org.postgresql.core.Oid.TEXT;
  */
 public class Controlador {
 
-    private Model odb;
+    public Model odb;
     private Gui vista;
     private int filasel=-1;
     private int id=0;
@@ -48,18 +52,24 @@ public class Controlador {
     private int edat;
     private Date dataAlta=null;
     private Date dataBaixa=null;
-    private Array propietaris= null;
-    private String[] propietarisArr= null;
+    public Array propietaris= null;
+    public String[] propietarisArr= null;
+    private Object obj = new Object();
+    
+    
+
+
 
     public Controlador(Model odb, Gui jf) {
         this.odb = odb;
         this.vista = jf;
-        carregaTaula(odb.SELECTbonsai());
+        carregaTaula(odb.SELECTbonsai("SELECT * FROM bonsai WHERE dataBaixa is NULL ORDER BY 1;"));
         ClearJTF();
         vista.setVisible(true);
         control();
     }
     
+    @SuppressWarnings("empty-statement")
     public void ClearJTF() {
         
         vista.getNomBonsaiJTF().setText("");
@@ -77,12 +87,19 @@ public class Controlador {
         edat=0;
         dataAlta=null;
         dataBaixa=null;
-        propietaris= null;
+        propietaris=null;
         
         
         
     }
 
+    public boolean isCellEditable (int row, int column) {
+        if (column != 7)
+            return true;
+        else
+            return false;
+        }
+    
     public void carregaTaula(ArrayList resultSet) {
         filasel = -1;
 
@@ -123,14 +140,28 @@ public class Controlador {
                 data.addElement(row);
             }
 
-            model = new DefaultTableModel(data, columnNames);
+            model = new DefaultTableModel(data, columnNames){
+                @Override
+                public boolean isCellEditable (int fila, int columna) {
+                    if (columna != 6 ){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            };        
+
             vista.getTaulaBonsais().setModel(model);
 
             TableColumn column;
             for (int i = 0; i < vista.getTaulaBonsais().getColumnCount(); i++) {
                 column = vista.getTaulaBonsais().getColumnModel().getColumn(i);
+                if(i==vista.getTaulaBonsais().getColumnCount()){
+                                
+                }  
                 column.setMaxWidth(250);
             }
+            
         }
 
     }
@@ -138,34 +169,52 @@ public class Controlador {
     public void control() {
         
         ActionListener actionListener = new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 if (actionEvent.getSource().equals(vista.getDeleteBonsaiBTN())) {
                     if (filasel!=-1){
                             odb.DELETEFROMbonsai(id);
                             ClearJTF();
-                            carregaTaula(odb.SELECTbonsai());
+                            carregaTaula(odb.SELECTbonsai("SELECT * FROM bonsai WHERE dataBaixa is NULL ORDER BY 1;"));
                     }
                     else JOptionPane.showMessageDialog(null, "Per borrar un bonsai primer l'has de seleccionar!!", "Error", JOptionPane.ERROR_MESSAGE);                
-                } 
-                else 
-                    if (actionEvent.getSource().equals(vista.getInsertBTN())) {
-                        if (!nom.equals("") || !nomBotanic.equals("")) {
-                            odb.INSERTbonsai(nom, nomBotanic, familia, edat, dataAlta, dataBaixa, propietaris);
-                            ClearJTF();
-                            carregaTaula(odb.SELECTbonsai());
-                        }
-                        else JOptionPane.showMessageDialog(null, "Falta nom i/o nom botanic", "Error", JOptionPane.ERROR_MESSAGE);
+                
+                } else if (actionEvent.getSource().equals(vista.getInsertBTN())) {
+                    if (!nom.equals("") || !nomBotanic.equals("")) {
+                        odb.SELECTbonsai(nom, nomBotanic, familia, edat, dataAlta, dataBaixa, propietaris);
+                        ClearJTF();
+                        carregaTaula(odb.SELECTbonsai("SELECT * FROM bonsai WHERE dataBaixa is NULL ORDER BY 1;"));
+                        
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Falta nom i/o nom botanic", "Error", JOptionPane.ERROR_MESSAGE);
+                    
+                    }
+                    
+                } else if (actionEvent.getSource().equals(vista.getUpdateBTN())) {
+                    if (filasel!=-1 && (!nom.equals("") || !nomBotanic.equals(""))){
+                        odb.UPDATEbonsai(id, nom, nomBotanic, familia, edat, dataAlta, dataBaixa, propietaris);
+                        ClearJTF();
+                        carregaTaula(odb.SELECTbonsai("SELECT * FROM bonsai WHERE dataBaixa is NULL ORDER BY 1;"));
                     
                     } else {
-                        if (actionEvent.getSource().equals(vista.getUpdateBTN())) {
-                            if (filasel!=-1 && (!nom.equals("") || !nomBotanic.equals(""))){
-                                odb.UPDATEbonsai(id, nom, nomBotanic, familia, edat, dataAlta, dataBaixa, propietaris);
-                                ClearJTF();
-                                carregaTaula(odb.SELECTbonsai());
-                            }
-                            else JOptionPane.showMessageDialog(null, "Primer has de marcar l'arbre", "Error", JOptionPane.ERROR_MESSAGE);                
-                        }
-                        else {
+                        JOptionPane.showMessageDialog(null, "Primer has de marcar l'arbre", "Error", JOptionPane.ERROR_MESSAGE);                
+                    
+                    }
+                
+                } else if (actionEvent.getSource().equals(vista.getArxiuBTN())) {    
+                    ClearJTF();
+                    carregaTaula(odb.SELECTbonsai("SELECT * FROM bonsai WHERE dataBaixa is not NULL ORDER BY 1;"));
+                    vista.getArxiuBTN().setVisible(false);
+                    vista.getActiusBTN().setVisible(true);
+                
+                } else if (actionEvent.getSource().equals(vista.getActiusBTN())) {    
+                    ClearJTF();
+                    carregaTaula(odb.SELECTbonsai("SELECT * FROM bonsai WHERE dataBaixa is NULL ORDER BY 1;"));
+                    vista.getArxiuBTN().setVisible(true);
+                    vista.getActiusBTN().setVisible(false);
+                        
+                    
+                } else {
                             try {
                                     odb.finalize();
                             } catch (Throwable e) {
@@ -173,13 +222,15 @@ public class Controlador {
                             }
                             System.exit(0);
                         }
-                    }    
+                        
             }
         };
         vista.getExitBTN().addActionListener(actionListener);
         vista.getInsertBTN().addActionListener(actionListener);
         vista.getUpdateBTN().addActionListener(actionListener);
         vista.getDeleteBonsaiBTN().addActionListener(actionListener);
+        vista.getArxiuBTN().addActionListener(actionListener);
+        vista.getActiusBTN().addActionListener(actionListener);
         
         MouseAdapter mouseAdapter=new MouseAdapter(){
             @Override
@@ -204,27 +255,19 @@ public class Controlador {
                         edat = Integer.parseInt(vista.getTaulaBonsais().getValueAt(filasel, 4).toString());
                         
                         dataAlta = (Date) vista.getTaulaBonsais().getValueAt(filasel, 5);
-                        vista.getDataAltaJTF().setText(dataAlta.toString());
-                        
+                        vista.getDataAltaJTF().setText(/*dataAlta.toString()*/(dataAlta==null?Model.dataActual():dataAlta.toString()));
+                       
                         dataBaixa = (Date) vista.getTaulaBonsais().getValueAt(filasel, 6);
-                        vista.getDataBaixaJTF().setText(dataBaixa.toString());
-                        String separ="";
-                        if(vista.getTaulaBonsais().getValueAt(filasel, 7)!=null){
-                            separ = vista.getTaulaBonsais().getValueAt(filasel, 7).toString().replace("{", "");
-                            separ = separ.replace("}", "");
-                            propietarisArr = separ.split(",");
-                        }else propietarisArr = new String[]{""};
-                        
-                        propietaris = Model.connexio.createArrayOf("varchar", propietarisArr);
-                        
-                        vista.getPropietarisJTF().setText(propietaris.toString());
+                        try{
+                        vista.getDataBaixaJTF().setText(/*dataBaixa.toString()*/ (dataBaixa.toString()==""?"":dataBaixa.toString()));
+                        }catch(NullPointerException exep){ }
+                        propietaris = (Array)vista.getTaulaBonsais().getValueAt(filasel, 7);  
+                        vista.getPropietarisJTF().setText((propietaris==null?"":propietaris.toString()));
                         
                         
                     }else ClearJTF();
                 } catch (NumberFormatException ex) {
                     System.out.println("Ha petat: " + ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         
@@ -247,31 +290,44 @@ public class Controlador {
                 }
                 
                 if(e.getSource().equals(vista.getEdatJTF())){
-                    edat = Integer.parseInt(vista.getEdatJTF().getText());
+                    if("".equals(vista.getEdatJTF().getText())){
+                        edat=1;
+                    
+                    }else {
+                        edat = Integer.parseInt(vista.getEdatJTF().getText());
+                    }
                 }
-                
+                 
                 if(e.getSource().equals(vista.getDataAltaJTF())){
-                    dataAlta = Date.valueOf(vista.getDataAltaJTF().getText().toString());
+                    dataAlta = Date.valueOf(vista.getDataAltaJTF().getText());
+                    
                 }
                
                 if(e.getSource().equals(vista.getDataBaixaJTF())){
-                    dataBaixa = Date.valueOf(vista.getDataBaixaJTF().getText().toString());
+                    
+                    
+                    if(dataBaixa.toString()==""){              
+                    dataBaixa = Date.valueOf(vista.getDataBaixaJTF().getText());
+                    } else dataBaixa=null;
                 }
                      
                 if(e.getSource().equals(vista.getPropietarisJTF())){
                     
+                    try {
                         String separ = vista.getPropietarisJTF().getText().replace("{", "");
                         separ = separ.replace("}", "");
-                        propietarisArr= separ.split(",");
-                        
-                        
-                        System.out.println(propietarisArr[0] +"|"+propietarisArr[1]);
-                    try {    
-                        propietaris = Model.connexio.createArrayOf("text", propietarisArr);
-                        
-                    } catch (SQLException e2) {
+                        final String[] propietarisArr= separ.split(",");
+
+                        propietaris = connexio.createArrayOf("text", propietarisArr);
+                       // Model.ps.setArray(1, propietaris);
+
+                     } catch (SQLException e2) {
                         System.out.println("Ha petat:" + e2);
-                    }
+
+                     }
+                   
+                   
+              
                     
                               
                 }

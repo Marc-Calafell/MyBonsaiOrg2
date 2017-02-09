@@ -5,6 +5,8 @@
  */
 package Vista;
 
+import Conrtolador.Controlador;
+import Model.Model;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -20,6 +22,7 @@ public class Gui extends javax.swing.JFrame {
      */
     public Gui() {
         initComponents();
+        getActiusBTN().setVisible(false);
     }
 
     /**
@@ -55,6 +58,8 @@ public class Gui extends javax.swing.JFrame {
         InsertBTN = new javax.swing.JButton();
         deleteBonsaiBTN = new javax.swing.JButton();
         UpdateBTN = new javax.swing.JButton();
+        ArxiuBTN = new javax.swing.JButton();
+        ActiusBTN = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -74,7 +79,7 @@ public class Gui extends javax.swing.JFrame {
         TaulaBonsais.setColumnSelectionAllowed(true);
         TaulaBonsais.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(TaulaBonsais);
-        TaulaBonsais.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        TaulaBonsais.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
         TaulaTractaments.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -88,7 +93,7 @@ public class Gui extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                true, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -105,11 +110,6 @@ public class Gui extends javax.swing.JFrame {
 
         DataAltaJTF.setText("yyyy-mm-dd");
         DataAltaJTF.setToolTipText("yyyy-mm-dd");
-        DataAltaJTF.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                DataAltaJTFMouseClicked(evt);
-            }
-        });
 
         jLabel1.setText("Nom:");
 
@@ -223,6 +223,10 @@ public class Gui extends javax.swing.JFrame {
 
         UpdateBTN.setText("Modificar");
 
+        ArxiuBTN.setText("Arxiu");
+
+        ActiusBTN.setText("Actius");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -231,7 +235,12 @@ public class Gui extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ExitBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(ExitBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ActiusBTN)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ArxiuBTN))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(InsertBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -254,19 +263,16 @@ public class Gui extends javax.swing.JFrame {
                     .addComponent(deleteBonsaiBTN)
                     .addComponent(UpdateBTN))
                 .addGap(101, 101, 101)
-                .addComponent(ExitBTN)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ActiusBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(ExitBTN)
+                        .addComponent(ArxiuBTN)))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void DataAltaJTFMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DataAltaJTFMouseClicked
-        if(getDataAltaJTF().getText()=="yyy-mm-dd"){
-            DataAltaJTF.setText("");
-        
-        }
-    }//GEN-LAST:event_DataAltaJTFMouseClicked
 
     public JTextField getDataAltaJTF() {
         return DataAltaJTF;
@@ -364,11 +370,29 @@ public class Gui extends javax.swing.JFrame {
         this.PropietarisJTF = PropietarisJTF;
     }
 
+    public JButton getArxiuBTN() {
+        return ArxiuBTN;
+    }
+
+    public void setArxiuBTN(JButton ArxiuBTN) {
+        this.ArxiuBTN = ArxiuBTN;
+    }
+
+    public JButton getActiusBTN() {
+        return ActiusBTN;
+    }
+
+    public void setActiusBTN(JButton ActiusBTN) {
+        this.ActiusBTN = ActiusBTN;
+    }
+
    
    
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ActiusBTN;
+    private javax.swing.JButton ArxiuBTN;
     private javax.swing.JTextField DataAltaJTF;
     private javax.swing.JTextField DataBaixaJTF;
     private javax.swing.JTextField EdatJTF;

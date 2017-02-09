@@ -15,6 +15,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Properties;
 import javax.swing.JOptionPane;
@@ -25,8 +27,11 @@ import javax.swing.JOptionPane;
 public class Model {
     
     public static Connection connexio = null;  
-    private static ResultSet resultSet = null;
-        
+    public static ResultSet resultSet = null;
+    public static PreparedStatement ps = null; 
+    //public static String DataActual = dataActual();
+    
+
     public Model() {
         Properties props = new Properties();
                
@@ -55,6 +60,8 @@ public class Model {
     }
 
 
+    
+    
     private void crearConnexio(String url, String usuari, String password){
         
         try {
@@ -68,10 +75,9 @@ public class Model {
 
     }
     
-    public ArrayList<Bonsai> SELECTbonsai(){
+    public ArrayList<Bonsai> SELECTbonsai(String sql){
             
         ArrayList llista=new ArrayList();
-        String sql = "SELECT * FROM bonsai ORDER BY 1;";
         try(PreparedStatement SELECT=connexio.prepareStatement(sql)) {
             this.resultSet=SELECT.executeQuery();
             
@@ -99,21 +105,22 @@ public class Model {
         return llista;    
     }
     
-    
-    
-    
-    public void INSERTbonsai(String nom, String nomBotanic, String familia, int edat, Date dataAlta, Date dataBaixa, Array propietaris){
-            
+    public void SELECTbonsai(String nom, String nomBotanic, String familia, int edat, Date dataAlta, Date dataBaixa, Array propietaris){
+        
+        if(dataAlta==null)dataAlta=Date.valueOf(dataActual());
+        if(edat==0)edat=1;
+        
+        
         String sql = "INSERT INTO bonsai (nom, nomBotanic, familia, edat, dataAlta , dataBaixa, propietaris) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try(PreparedStatement INSERT=connexio.prepareStatement(sql)) {
-            INSERT.setString(1, nom);
-            INSERT.setString(2, nomBotanic);
-            INSERT.setString(3, familia);
-            INSERT.setInt(4, edat);
-            INSERT.setDate(5,dataAlta);
-            INSERT.setDate(6, dataBaixa);
-            INSERT.setArray(7, propietaris);
-            INSERT.executeUpdate();
+        try(PreparedStatement SELECT=connexio.prepareStatement(sql)) {
+            SELECT.setString(1, nom);
+            SELECT.setString(2, nomBotanic);
+            SELECT.setString(3, familia);
+            SELECT.setInt(4, edat);
+            SELECT.setDate(5,dataAlta);
+            SELECT.setDate(6, dataBaixa);
+            SELECT.setArray(7, propietaris);
+            SELECT.executeUpdate();
             
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "No s'ha pogut afetgir el bonsai a la taula \n", "Error", JOptionPane.ERROR_MESSAGE);
@@ -125,6 +132,8 @@ public class Model {
     public void UPDATEbonsai(int id, String nom, String nomBotanic, String familia, int edat, Date dataAlta, Date dataBaixa, Array propietaris){
             
         String sql = "UPDATE bonsai SET nom=?, nomBotanic=?, familia=?, edat=?, dataAlta=?, dataBaixa=?, propietaris=? WHERE id=?";
+        if(edat==0)edat=1;
+        
         try(PreparedStatement UPDATE=connexio.prepareStatement(sql)) {
             UPDATE.setString(1, nom);
             UPDATE.setString(2, nomBotanic);
@@ -156,6 +165,13 @@ public class Model {
             System.err.println(e);
         }  
     
+    }
+    
+    public static String dataActual(){
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+                LocalDate localDate = LocalDate.now();
+                String dataAvui= dtf.format(localDate);
+                return dataAvui.replace("/", "-");
     }
  
 }
